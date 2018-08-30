@@ -5,7 +5,7 @@ lazy val root = (project in file(".")).
   settings(
     inThisBuild(List(
       organization    := "com.example",
-      scalaVersion    := "2.12.4"
+      scalaVersion    := "2.12.6"
     )),
     name := "akka-http-quickstart-scala",
     libraryDependencies ++= Seq(

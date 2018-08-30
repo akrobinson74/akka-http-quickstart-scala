@@ -1,7 +1,7 @@
 package com.olx.iris
 
 import java.time.ZonedDateTime
-import spray.json.{DefaultJsonProtocol, DeserializationException, JsString, JsValue, RootJsonFormat}
+import spray.json.{ DefaultJsonProtocol, DeserializationException, JsString, JsValue, RootJsonFormat }
 
 case class Customer(
   address: Address,
@@ -59,7 +59,6 @@ case class Transaction(
   items: List[Item],
   transactionReference: String
 )
-
 
 trait JsonMappings extends DefaultJsonProtocol {
 
