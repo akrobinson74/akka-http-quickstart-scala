@@ -10,7 +10,7 @@ import org.mongodb.scala.bson.codecs.{ DEFAULT_CODEC_REGISTRY, Macros }
 import scala.collection.JavaConverters._
 import scala.collection.mutable.ArrayBuffer
 
-object Mongo {
+trait Mongo {
   val providersList: java.util.List[CodecProvider] = ArrayBuffer(
     Macros.createCodecProvider(classOf[Address]),
     Macros.createCodecProvider(classOf[Customer]),
