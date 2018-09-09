@@ -2,6 +2,8 @@ package com.olx.iris
 
 import akka.actor.{Actor, ActorLogging, Props}
 import com.olx.iris.TransactionActor.CreateTransaction
+import com.olx.iris.model.{Integrator, Transaction}
+import org.mongodb.scala.MongoDatabase
 
 object TransactionActor {
   final case class CreateTransaction(transaction: Transaction, integrator: Integrator)
@@ -11,7 +13,7 @@ object TransactionActor {
   def props: Props = Props()
 }
 
-class TransactionActor() extends Actor with ActorLogging {
+class TransactionActor(db: MongoDatabase) extends Actor with ActorLogging {
 
   override def receive: Receive = {
     case CreateTransaction =>
