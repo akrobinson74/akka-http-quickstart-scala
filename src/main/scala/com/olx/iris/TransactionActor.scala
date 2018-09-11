@@ -1,10 +1,13 @@
 package com.olx.iris
 
-import akka.actor.{ Actor, ActorLogging, Props }
-import com.olx.iris.TransactionActor.{ CreateTransaction, GetTransactionById, GetTransactionByReference }
-import com.olx.iris.model.{ Integrator, Transaction }
+import akka.actor.{Actor, ActorLogging, Props}
+import com.mongodb.async.client.Observer
+import com.olx.iris.TransactionActor.{CreateTransaction, GetTransactionById, GetTransactionByReference, TransactionCreated}
+import com.olx.iris.model.{Integrator, Transaction}
 import com.olx.iris.mongodb.Mongo
 import org.mongodb.scala.model.Filters._
+
+import scala.concurrent.Future
 
 object TransactionActor {
   final case class CreateTransaction(transaction: Transaction)

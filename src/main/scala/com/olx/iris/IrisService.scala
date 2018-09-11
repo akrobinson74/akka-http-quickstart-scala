@@ -14,6 +14,7 @@ import akka.util.Timeout
 import com.olx.iris.model.{ Integrator, Transaction }
 import com.olx.iris.mongodb.Mongo
 import com.olx.iris.TransactionActor.{ CreateTransaction, GetTransactionByReference, TransactionCreated }
+import org.mongodb.scala.Completed
 
 import scala.concurrent.{ ExecutionContext, Future }
 
@@ -31,13 +32,12 @@ trait Iris extends Mongo with JsonMappings {
   val routes: Route = {
     pathPrefix("orders") {
       post {
-        entity(as[Transaction]) { transaction =>
-          val transactionCreated = (transactionActor ? CreateTransaction(transaction)).onComplete {
-            case util.Success(value) =>
-              complete((StatusCodes.Created, TransactionCreated(transaction.transactionReference)))
-            case scala.util.Failure(exception) => complete((StatusCodes.InternalServerError))
+        entity(as[Transaction]) { transaction: Transaction =>
+          val transactionCreated: Future[Completed] =
+            (transactionActor ? CreateTransaction(transaction)).mapTo[Completed]
+          onSuccess(transactionCreated) { completion =>
+            complete((StatusCodes.Created, TransactionCreated(transaction.transactionReference)))
           }
-
         }
       } ~
         path(Segment) { transactionRef: String =>
