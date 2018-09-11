@@ -4,33 +4,39 @@ import akka.actor.{ Actor, ActorLogging, Props }
 import com.olx.iris.TransactionActor.{ CreateTransaction, GetTransactionById, GetTransactionByReference }
 import com.olx.iris.model.{ Integrator, Transaction }
 import com.olx.iris.mongodb.Mongo
-import org.mongodb.scala.MongoDatabase
 import org.mongodb.scala.model.Filters._
 
 object TransactionActor {
   final case class CreateTransaction(transaction: Transaction)
   final case class GetTransactionById(transactionId: String, integrator: Integrator)
   final case class GetTransactionByReference(transactionReference: String, integrator: Integrator)
+  final case class TransactionCreated(transactionReference: String)
 
   def props: Props = Props()
 }
 
 class TransactionActor() extends Mongo with Actor with ActorLogging {
 
-  val TX_COLLECTION: String = "transactions"
-
   def createTransaction(tx: Transaction) =
-    transactionCollection.insertOne(tx)
+    transactionCollection
+      .insertOne(tx)
+      .toFuture()
 
   def getTransactionById(id: String, integrator: Integrator) =
-    transactionCollection.find(
-      and(equal("_id", id), equal("integrator", integrator))
-    )
+    transactionCollection
+      .find(
+        and(equal("_id", id), equal("integrator", integrator))
+      )
+      .first()
+      .toFuture()
 
-  def getTransactionByReference(transactionReference: String, int: Integrator) =
-    transactionCollection.find(
-      and(equal("transactionReference", transactionReference), equal("integrator", int))
-    )
+  def getTransactionByReference(transactionReference: String, integrator: Integrator) =
+    transactionCollection
+      .find(
+        and(equal("transactionReference", transactionReference), equal("integrator", integrator))
+      )
+      .first()
+      .toFuture()
 
   override def receive: Receive = {
     case CreateTransaction(transaction: Transaction) =>

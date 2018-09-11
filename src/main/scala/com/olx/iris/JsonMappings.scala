@@ -2,10 +2,14 @@ package com.olx.iris
 
 import java.time.ZonedDateTime
 
+import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
 import com.olx.iris.model._
+import com.olx.iris.TransactionActor.TransactionCreated
 import spray.json.{DefaultJsonProtocol, DeserializationException, JsString, JsValue, RootJsonFormat}
 
-trait JsonMappings extends DefaultJsonProtocol {
+trait JsonMappings extends SprayJsonSupport {
+
+  import DefaultJsonProtocol._
 
   implicit object ZonedDateTimeJsonFormat extends RootJsonFormat[ZonedDateTime] {
     override def write(obj: ZonedDateTime) = JsString(obj.toString)
@@ -23,4 +27,5 @@ trait JsonMappings extends DefaultJsonProtocol {
   implicit val paymentReferenceFormat = jsonFormat2(PaymentReference)
   implicit val productFormat = jsonFormat11(Item)
   implicit val transactionFormat = jsonFormat4(Transaction)
+  implicit val transactionCreatedFormat = jsonFormat1(TransactionCreated)
 }
